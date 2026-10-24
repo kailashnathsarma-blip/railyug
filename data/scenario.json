@@ -1,0 +1,423 @@
+{
+  "scenarioId": "scenario-standard-family-v1",
+  "name": "Family Journey with Mobility & Caregiver Dependency",
+  "ruleSetVersion": "rules-v1.0",
+  "disclaimer": "SIMULATED DATA - FOR DEMONSTRATION AND PLANNING ONLY - NOT OFFICIAL IRCTC STATUS",
+  "simulationTimestamp": "2026-10-24T14:00:00+05:30",
+  "passengers": [
+    {
+      "id": "P1",
+      "name": "Rameshwar Sharma",
+      "age": 72,
+      "gender": "M",
+      "category": "Senior Citizen",
+      "mobilityProfile": {
+        "needsRampOrLift": true,
+        "maxWalkDistanceMeters": 150,
+        "walkingSpeedMps": 0.55,
+        "requiresLowerBerth": true,
+        "notes": "Limited mobility, knee osteoarthritis, cannot use stairs"
+      },
+      "caregiverLinkedPassengerId": "P2",
+      "mustTravelWith": ["P2"],
+      "accessibilityNeeds": ["wheelchair_assistance", "lower_berth", "step_free_access"],
+      "seatPreferences": ["LB"],
+      "ticketNames": {
+        "leg1": "Rameshwar Sharma",
+        "leg2": "Rameshwar Sharma"
+      }
+    },
+    {
+      "id": "P2",
+      "name": "Sunita Sharma",
+      "age": 44,
+      "gender": "F",
+      "category": "Adult Caregiver",
+      "mobilityProfile": {
+        "needsRampOrLift": false,
+        "maxWalkDistanceMeters": 2000,
+        "walkingSpeedMps": 1.2,
+        "requiresLowerBerth": false,
+        "notes": "Primary caregiver to P1; must stay co-located"
+      },
+      "caregiverForPassengerId": "P1",
+      "mustTravelWith": ["P1"],
+      "accessibilityNeeds": ["adjacent_to_p1"],
+      "seatPreferences": ["MB", "LB"],
+      "ticketNames": {
+        "leg1": "Sunita Sharma",
+        "leg2": "Sunita Sharma"
+      }
+    },
+    {
+      "id": "P3",
+      "name": "Aarav Sharma",
+      "age": 4,
+      "gender": "M",
+      "category": "Child Under 5",
+      "mobilityProfile": {
+        "needsRampOrLift": false,
+        "maxWalkDistanceMeters": 300,
+        "walkingSpeedMps": 0.7,
+        "requiresLowerBerth": false,
+        "notes": "Needs adjacent guardian, adds childcare and luggage stroller overhead"
+      },
+      "dependentGuardians": ["P2", "P5"],
+      "mustTravelWith": ["P2", "P5"],
+      "childcareOverheadMinutes": 8,
+      "accessibilityNeeds": ["adjacent_guardian"],
+      "seatPreferences": ["LB"],
+      "ticketNames": {
+        "leg1": "Aarav Sharma",
+        "leg2": "Aarav Sharma"
+      }
+    },
+    {
+      "id": "P4",
+      "name": "Priya Sharma",
+      "age": 28,
+      "gender": "F",
+      "category": "Screen-Reader User",
+      "mobilityProfile": {
+        "needsRampOrLift": false,
+        "maxWalkDistanceMeters": 3000,
+        "walkingSpeedMps": 1.1,
+        "requiresLowerBerth": false,
+        "notes": "Low vision/blindness; navigates using screen reader and keyboard"
+      },
+      "accessibilityNeeds": ["screen_reader_friendly", "tactile_pathing_info", "audio_announcements"],
+      "seatPreferences": ["SL", "SU"],
+      "ticketNames": {
+        "leg1": "Priya Sharma",
+        "leg2": "Priya Sharma"
+      }
+    },
+    {
+      "id": "P5",
+      "name": "Vikram Sharma",
+      "age": 26,
+      "gender": "M",
+      "category": "Flexible Adult",
+      "mobilityProfile": {
+        "needsRampOrLift": false,
+        "maxWalkDistanceMeters": 5000,
+        "walkingSpeedMps": 1.4,
+        "requiresLowerBerth": false,
+        "notes": "Fast walker, handles heavy luggage, can split if family rules permit"
+      },
+      "accessibilityNeeds": [],
+      "seatPreferences": ["UB", "SU"],
+      "isSplittable": true,
+      "connectivityStatus": "ONLINE",
+      "ticketNames": {
+        "leg1": "Vikram Sharma",
+        "leg2": "Vikram K Sharma"
+      }
+    }
+  ],
+  "luggage": {
+    "totalHeavyBags": 4,
+    "strollerCount": 1,
+    "overheadMinutes": 10
+  },
+  "legs": [
+    {
+      "legIndex": 1,
+      "legId": "LEG-1-CONFIRMED",
+      "trainNumber": "12951",
+      "trainName": "Mumbai Rajdhani Express",
+      "origin": "MMCT",
+      "originName": "Mumbai Central",
+      "destination": "KOTA",
+      "destinationName": "Kota Junction",
+      "scheduledDeparture": "2026-10-25T17:00:00+05:30",
+      "scheduledArrival": "2026-10-26T03:15:00+05:30",
+      "estimatedArrivalRange": {
+        "p10": "2026-10-26T03:15:00+05:30",
+        "p50": "2026-10-26T03:25:00+05:30",
+        "p90": "2026-10-26T04:10:00+05:30"
+      },
+      "status": "CONFIRMED",
+      "pnr": "245-8912301",
+      "coach": "B3",
+      "berths": {
+        "P1": "B3-12 (LB)",
+        "P2": "B3-11 (MB)",
+        "P3": "B3-12 (With P1/P2)",
+        "P4": "B3-15 (SL)",
+        "P5": "B3-16 (SU)"
+      },
+      "farePaidTotal": 14250,
+      "fareBreakdownPerPassenger": {
+        "P1": 2850,
+        "P2": 2850,
+        "P3": 0,
+        "P4": 2850,
+        "P5": 2850
+      },
+      "liveDelayMinutes": 0,
+      "disruptionAlert": null
+    },
+    {
+      "legIndex": 2,
+      "legId": "LEG-2-WAITLISTED",
+      "trainNumber": "12059",
+      "trainName": "Kota Jan Shatabdi Express",
+      "origin": "KOTA",
+      "originName": "Kota Junction",
+      "destination": "NDLS",
+      "destinationName": "New Delhi",
+      "scheduledDeparture": "2026-10-26T03:55:00+05:30",
+      "scheduledArrival": "2026-10-26T12:30:00+05:30",
+      "estimatedArrivalRange": {
+        "p10": "2026-10-26T12:30:00+05:30",
+        "p50": "2026-10-26T12:45:00+05:30",
+        "p90": "2026-10-26T13:20:00+05:30"
+      },
+      "status": "WAITLISTED",
+      "pnr": "281-9923410",
+      "bookingStatus": "GNWL 14, 15, 16, 17",
+      "currentStatus": "WL 7, 8, 9, 10",
+      "quota": "GN",
+      "travelClass": "CC",
+      "farePaidTotal": 3760,
+      "fareBreakdownPerPassenger": {
+        "P1": 940,
+        "P2": 940,
+        "P3": 0,
+        "P4": 940,
+        "P5": 940
+      },
+      "liveDelayMinutes": 0,
+      "confirmationProbabilityRange": {
+        "lower": 0.38,
+        "upper": 0.54,
+        "sampleSize": 218,
+        "lowDataWarning": false,
+        "assumption": "Based on 218 synthetic festive/post-monsoon GNWL CC bookings on Kota-Delhi corridor"
+      }
+    }
+  ],
+  "transferJunction": {
+    "stationCode": "KOTA",
+    "stationName": "Kota Junction",
+    "scheduledWindowMinutes": 40,
+    "arrivalPlatform": 2,
+    "departurePlatform": 4,
+    "distanceMeters": 280,
+    "infrastructure": {
+      "stairs": { "available": true, "stepCount": 42 },
+      "lifts": { "available": true, "count": 1, "isOperational": true, "averageWaitTimeMinutes": 3.5 },
+      "ramps": { "available": true, "count": 1, "distanceMeters": 340, "gradePercent": 7 }
+    },
+    "accessibilityProfile": {
+      "p1Feasible": true,
+      "requiresStepFreeRoute": true,
+      "stepFreePath": ["Platform 2", "South FOB Lift / Ramp", "Platform 4"]
+    }
+  },
+  "injectableDisruptions": [
+    {
+      "id": "DISRUPT-1-DELAY55",
+      "name": "Train 1 runs 55 minutes late",
+      "type": "OFFICIAL",
+      "description": "Leg 1 (12951) delayed by 55 mins approaching Kota. Connection window shrinks from +40m to -15m.",
+      "effects": {
+        "train1DelayMinutes": 55,
+        "connectionBroken": true,
+        "replanRequired": true
+      }
+    },
+    {
+      "id": "DISRUPT-2-P5-OFFLINE",
+      "name": "P5 loses cellular connectivity",
+      "type": "LOCAL_EVENT",
+      "description": "P5 enters cellular dead zone near Chambal ravines; P5 split coordination must use SMS/offline packs.",
+      "effects": {
+        "p5Connectivity": "OFFLINE",
+        "lockP5Split": true
+      }
+    },
+    {
+      "id": "DISRUPT-3-VANISHING-ALT",
+      "name": "Alternative vanishes mid-booking",
+      "type": "SIMULATION_CURVEBALL",
+      "description": "A replacement train (12401 Nanda Devi) has 2 remaining seats taken by another user during checkout.",
+      "effects": {
+        "vanishedTrainId": "12401",
+        "keepPassengerData": true,
+        "triggerFallback": true
+      }
+    },
+    {
+      "id": "DISRUPT-4-NAME-MISMATCH",
+      "name": "Name mismatch detected on tickets",
+      "type": "VALIDATION_WARNING",
+      "description": "P5 is 'Vikram Sharma' on Leg 1, but 'Vikram K Sharma' on Leg 2. Risk of ID scrutiny by TTE.",
+      "effects": {
+        "mismatchPassengerId": "P5",
+        "similarityScore": 0.88,
+        "consequence": "Potential TTE dispute or ID check delay",
+        "authorizedProcess": "Carry Govt ID with initial expand verification or file IRCTC ticket correction prior to chart preparation."
+      }
+    },
+    {
+      "id": "DISRUPT-5-PRIORITY-SHIFT-1",
+      "name": "Priority shift: Minimize Cost",
+      "type": "USER_PREFERENCE",
+      "description": "User sets Cost weight to High, Delay Tolerance to Low.",
+      "effects": {
+        "weights": { "cost": 0.8, "speed": 0.2, "comfort": 0.3 }
+      }
+    },
+    {
+      "id": "DISRUPT-6-PRIORITY-SHIFT-2",
+      "name": "Priority shift: Maximize Accessibility & Comfort",
+      "type": "USER_PREFERENCE",
+      "description": "User sets Comfort/Accessibility to Maximum, Cost to Low.",
+      "effects": {
+        "weights": { "cost": 0.1, "speed": 0.3, "comfort": 0.9 }
+      }
+    },
+    {
+      "id": "DISRUPT-7-PRIORITY-SHIFT-3",
+      "name": "Priority shift: Earliest Arrival at Destination",
+      "type": "USER_PREFERENCE",
+      "description": "User prioritizes earliest arrival regardless of intermediate class or cost.",
+      "effects": {
+        "weights": { "cost": 0.2, "speed": 0.9, "comfort": 0.3 }
+      }
+    },
+    {
+      "id": "DISRUPT-8-BERTH-CANCELLED",
+      "name": "P5 berth is cancelled",
+      "type": "OFFICIAL",
+      "description": "P5 cancels their berth on Leg 1. Ledger recalculation triggers refund state machine and fare audit.",
+      "effects": {
+        "cancelledPassengerId": "P5",
+        "legId": "LEG-1-CONFIRMED",
+        "reconcileLedger": true
+      }
+    },
+    {
+      "id": "DISRUPT-9-LIFT-OUTAGE",
+      "name": "Kota Platform 2/4 Lift Outage",
+      "type": "CROWD_AND_OFFICIAL",
+      "description": "Station lift is under emergency maintenance. Group must use the 340m ramp route.",
+      "effects": {
+        "liftOperational": false,
+        "forceRampRoute": true,
+        "additionalTransferMinutes": 6
+      }
+    },
+    {
+      "id": "DISRUPT-10-TRAIN2-CANCELLED",
+      "name": "Train 2 Cancelled due to foggy weather",
+      "type": "OFFICIAL",
+      "description": "Kota Jan Shatabdi 12059 cancelled by railway. 100% refund entitlement without clerkage.",
+      "effects": {
+        "leg2Status": "CANCELLED_BY_RAILWAY",
+        "fullRefund": true
+      }
+    },
+    {
+      "id": "DISRUPT-11-PLATFORM-CHANGE",
+      "name": "Last-minute Platform Change to PF 6",
+      "type": "OFFICIAL",
+      "description": "Train 2 shifted to Platform 6 across yard, doubling transfer distance to 560m.",
+      "effects": {
+        "newDeparturePlatform": 6,
+        "transferDistanceMeters": 560
+      }
+    },
+    {
+      "id": "DISRUPT-12-QUOTA-EXHAUSTION",
+      "name": "Tatkal Quota Regret on Alternative 12903",
+      "type": "OFFICIAL",
+      "description": "Alternative Golden Temple Mail Tatkal quota exhausts to REGRET status within 45 seconds.",
+      "effects": {
+        "trainUnavailable": "12903"
+      }
+    },
+    {
+      "id": "DISRUPT-13-CROWD-STATION-CONGESTION",
+      "name": "Crowd report: Festival surge at Kota junction",
+      "type": "CROWD",
+      "description": "14 passenger reports of heavy rush on FOB stairs and ramps. Regrouping buffer increases by 7 min.",
+      "effects": {
+        "crowdReports": 14,
+        "regroupingPenaltyMinutes": 7
+      }
+    },
+    {
+      "id": "DISRUPT-14-PREDICTED-DELAY-TRAIN2",
+      "name": "Predicted delay: Train 2 incoming late by 30 mins",
+      "type": "PREDICTED",
+      "description": "Machine learning prediction: Train 2 is likely to depart 25–40m late from originating yard.",
+      "effects": {
+        "predictedTrain2DelayRange": [25, 40],
+        "confidence": 0.72
+      }
+    },
+    {
+      "id": "DISRUPT-15-CHART-PREPARATION-WL-REGRET",
+      "name": "Chart Prepared: Leg 2 WL Dropped to Regret",
+      "type": "OFFICIAL",
+      "description": "Final chart prepared at Kota for 12059; WL 7-10 was NOT confirmed. Passengers without valid berth cannot board.",
+      "effects": {
+        "chartPrepared": true,
+        "confirmed": false
+      }
+    },
+    {
+      "id": "DISRUPT-16-P1-ASSISTANCE-DELAY",
+      "name": "Wheelchair Porter delayed at reception",
+      "type": "LOCAL_EVENT",
+      "description": "Booked battery-car/wheelchair attendant arrives 12 minutes late at coach B3.",
+      "effects": {
+        "porterDelayMinutes": 12
+      }
+    },
+    {
+      "id": "DISRUPT-17-HOTEL-DAY-RECOVERY",
+      "name": "Day-room needed for Senior Citizen recovery",
+      "type": "LOCAL_EVENT",
+      "description": "P1 fatigue requires mandatory 4-hour retiring room stay at Kota junction before onward travel.",
+      "effects": {
+        "mandatoryLayoverMinutes": 240
+      }
+    },
+    {
+      "id": "DISRUPT-18-LEGAL-SPLIT-P5-BUS",
+      "name": "P5 takes express AC Volvo bus",
+      "type": "SPLIT_PLAN",
+      "description": "P5 splits to take express road transit to Delhi; P1-P4 remain together on morning Vande Bharat.",
+      "effects": {
+        "splitPassenger": "P5",
+        "splitMode": "AC_BUS"
+      }
+    },
+    {
+      "id": "DISRUPT-19-ILLEGAL-SPLIT-ATTEMPT",
+      "name": "User attempts to leave P1 alone at Kota",
+      "type": "ILLEGAL_ACTION",
+      "description": "Test case: User attempts to assign P2 and P5 to early train, leaving P1 unattended.",
+      "effects": {
+        "violatesRule": "P1_CAREGIVER_HARD_LINK",
+        "mustBlock": true
+      }
+    },
+    {
+      "id": "DISRUPT-20-COMPOUND-CASCADE",
+      "name": "Compound Cascade: 55m Delay + Lift Outage + Regret",
+      "type": "COMPOUND_CASCADE",
+      "description": "Worst-case cascade: Train 1 delayed 55m, station lift broken, and Leg 2 WL chart dropped. Multi-factor re-plan required.",
+      "effects": {
+        "train1DelayMinutes": 55,
+        "liftOperational": false,
+        "chartDropped": true,
+        "compound": true
+      }
+    }
+  ]
+}

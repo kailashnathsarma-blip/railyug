@@ -1,0 +1,134 @@
+{
+  "ruleSetVersion": "rules-v1.0",
+  "name": "Railyug Standard Passenger Protection & Railway Transit Rules",
+  "status": "ACTIVE_SIMULATION_STANDARD",
+  "disclaimer": "SIMULATED DATA ONLY - NOT OFFICIAL IRCTC POLICY. FOR JOURNEY RESILIENCE ASSISTANCE DEMO.",
+  "hardConstraints": {
+    "caregiverProtection": {
+      "mandatoryLinkPairs": [
+        {
+          "dependentId": "P1",
+          "caregiverId": "P2",
+          "ruleName": "P1_CAREGIVER_HARD_LINK",
+          "errorMessage": "Caregiver violation: Passenger P1 (Senior Citizen with mobility constraint) cannot be separated from caregiver P2 under any itinerary."
+        }
+      ],
+      "childProtection": {
+        "dependentId": "P3",
+        "eligibleGuardians": ["P2", "P5"],
+        "ruleName": "CHILD_GUARDIAN_ADJACENCY",
+        "errorMessage": "Child protection violation: Passenger P3 (child under five) must be accompanied by at least one eligible adult guardian (P2 or P5)."
+      },
+      "accessibilityCompliance": {
+        "P1": {
+          "disallowStairsOnlyRoutes": true,
+          "requireStepFreeTransfer": true,
+          "maxWalkDistanceWithoutAssistanceMeters": 180,
+          "requireLowerBerthForOvernightLegs": true,
+          "errorMessage": "Accessibility constraint failed: Selected route lacks step-free access or exceeds P1 walking endurance limit."
+        }
+      }
+    }
+  },
+  "transferFeasibilityParameters": {
+    "defaultPlatformDistanceMeters": 250,
+    "speedMultipliers": {
+      "standardAdultMps": 1.25,
+      "seniorMobilityConstrainedMps": 0.55,
+      "childWalkingMps": 0.70,
+      "childStrollerCarryingMps": 0.90,
+      "groupSlowestPaceFactor": 1.0
+    },
+    "verticalTransitTimesMinutes": {
+      "stairsFlightSeconds": 90,
+      "rampWalkDistanceFactor": 1.35,
+      "liftOperationalWaitMinutes": 3.5,
+      "liftOutageFallbackMinutes": 7.0
+    },
+    "bufferAllowancesMinutes": {
+      "luggageOverheadMinutesPerHeavyBag": 1.5,
+      "childCareOverheadMinutes": 8.0,
+      "groupRegroupingBufferMinutes": 5.0,
+      "crowdCongestionDelayPerReportMinutes": 0.5
+    },
+    "minimumSafeConnectionWindowMinutes": 25.0
+  },
+  "refundAndCancellationPolicy": {
+    "confirmedTickets": {
+      "moreThan48HoursBeforeDeparture": {
+        "clerkagePerPassenger": {
+          "1A_EC": 240,
+          "2A_1AC": 200,
+          "3A_CC_3E": 180,
+          "SL": 120,
+          "2S": 60
+        },
+        "description": "Flat cancellation charge per passenger if cancelled >48 hrs before departure."
+      },
+      "between12And48HoursBeforeDeparture": {
+        "deductionPercent": 0.25,
+        "minDeduction": 180,
+        "description": "25% of fare subject to minimum flat cancellation charge."
+      },
+      "between4And12HoursBeforeDeparture": {
+        "deductionPercent": 0.50,
+        "minDeduction": 180,
+        "description": "50% of fare subject to minimum flat cancellation charge before chart prep."
+      },
+      "lessThan4HoursOrAfterChartPrep": {
+        "deductionPercent": 1.0,
+        "refundPercent": 0.0,
+        "description": "No refund permissible after chart preparation under standard cancellation rules."
+      }
+    },
+    "waitlistedTickets": {
+      "priorToChartPreparation": {
+        "clerkageFeePerPassenger": 60,
+        "refundPercentOfRemaining": 1.0,
+        "description": "Full refund minus standard clerkage fee of ₹60 per passenger."
+      },
+      "autoCancellationOnChartRegret": {
+        "clerkageFeePerPassenger": 60,
+        "refundPercentOfRemaining": 1.0,
+        "description": "Fully waitlisted e-tickets dropped at chart preparation are refunded automatically minus clerkage."
+      }
+    },
+    "railwayDisruptionFullRefund": {
+      "trainCancelledByRailway": {
+        "refundPercent": 1.0,
+        "clerkageFee": 0,
+        "tdrFilingRequired": false,
+        "description": "100% full refund with zero cancellation or clerkage fees when train is officially cancelled by Indian Railways."
+      },
+      "missedConnectionDueToLateRunningTrain": {
+        "refundPercent": 1.0,
+        "clerkageFee": 0,
+        "tdrFilingRequired": true,
+        "description": "Full refund for untravelled leg when passenger misses connecting train due to official late arrival of originating train (TDR reason: Missed Connection)."
+      }
+    },
+    "refundStateOrdering": [
+      "CANCELLATION_REQUESTED",
+      "REFUND_INITIATED",
+      "REFUND_PROCESSING",
+      "FINAL_CREDIT"
+    ]
+  },
+  "tatkalHoldPolicy": {
+    "defaultHoldWindowSeconds": 180,
+    "minHoldWindowSeconds": 120,
+    "maxHoldWindowSeconds": 180,
+    "accessibleExtensionSeconds": 120,
+    "maxActiveHoldsPerAccount": 1,
+    "concurrencyLockType": "ATOMIC_COMPARE_AND_SWAP",
+    "serverClockAuthoritative": true,
+    "allowTimerResetOnRefresh": false,
+    "groupHoldSemantics": "ALL_OR_NOTHING"
+  },
+  "rankingWeightsDefault": {
+    "expectedDelayWeight": 0.40,
+    "confirmationRiskWeight": 0.35,
+    "comfortAndAccessibilityWeight": 0.15,
+    "costWeight": 0.10
+  }
+}
