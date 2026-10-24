@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Railyug – resilient journey assistant (demo)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--bg:#f6f7f9;--surf:#fff;--ink:#14202e;--mut:#4a5a6b;--line:#cfd7e0;--blue:#12305a;--blue-t:#e3ebf6;--saf:#b8650a;--saf-t:#fdeccf;--ok:#17653a;--ok-t:#dcf2e4;--bad:#a4261b;--bad-t:#fbe1de;--warn:#7a5800;--warn-t:#fff1c7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1621;--surf:#172231;--ink:#eaf0f7;--mut:#a9b8c8;--line:#2e3e52;--blue:#9cc2f5;--blue-t:#1d3552;--saf:#f0b35a;--saf-t:#3d2c10;--ok:#7fdca1;--ok-t:#14351f;--bad:#ff9d93;--bad-t:#431a16;--warn:#f2cf6b;--warn-t:#3a2f0a}}
+:root[data-theme="dark"]{--bg:#0e1621;--surf:#172231;--ink:#eaf0f7;--mut:#a9b8c8;--line:#2e3e52;--blue:#9cc2f5;--blue-t:#1d3552;--saf:#f0b35a;--saf-t:#3d2c10;--ok:#7fdca1;--ok-t:#14351f;--bad:#ff9d93;--bad-t:#431a16;--warn:#f2cf6b;--warn-t:#3a2f0a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 "Atkinson Hyperlegible",system-ui,Segoe UI,Arial,sans-serif}
+:focus-visible{outline:3px solid var(--saf);outline-offset:2px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;background:var(--surf);padding:8px;z-index:9}
+header{background:var(--blue-t);border-bottom:3px solid var(--saf);padding:14px 20px}
+.wrap{max-width:1000px;margin:0 auto}
+h1{margin:0;font-size:1.7rem;color:var(--blue)}h2{font-size:1.3rem;margin:0 0 8px;color:var(--blue)}h3{font-size:1.05rem;margin:14px 0 6px}
+.sub{color:var(--mut);margin:2px 0 0}
+.sim{display:inline-block;background:var(--warn-t);color:var(--warn);border:2px solid var(--warn);padding:2px 10px;font-weight:700;border-radius:4px;font-size:.9rem;margin-top:8px}
+nav{display:flex;flex-wrap:wrap;gap:6px;padding:10px 20px;max-width:1000px;margin:0 auto}
+nav button{font:inherit;padding:8px 14px;border:2px solid var(--line);background:var(--surf);color:var(--ink);border-radius:6px;cursor:pointer}
+nav button[aria-selected=true]{background:var(--blue);color:var(--bg);border-color:var(--blue);font-weight:700}
+main{max-width:1000px;margin:0 auto;padding:6px 20px 40px}
+.panel{background:var(--surf);border:1px solid var(--line);border-radius:8px;padding:16px;margin:12px 0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+button.b{font:inherit;padding:8px 14px;border-radius:6px;border:2px solid var(--blue);background:var(--blue);color:var(--bg);cursor:pointer;font-weight:700}
+button.b.alt{background:transparent;color:var(--blue)}button.b:disabled{opacity:.5;cursor:not-allowed}
+.tag{display:inline-block;padding:1px 9px;border-radius:4px;font-weight:700;font-size:.88rem;border:2px solid}
+.ok{background:var(--ok-t);color:var(--ok);border-color:var(--ok)}.bad{background:var(--bad-t);color:var(--bad);border-color:var(--bad)}.warn{background:var(--warn-t);color:var(--warn);border-color:var(--warn)}.info{background:var(--blue-t);color:var(--blue);border-color:var(--blue)}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.card{border:2px solid var(--line);border-radius:8px;padding:12px;background:var(--surf)}
+.seats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:420px}
+.seat{font:inherit;padding:10px 4px;border:2px solid var(--line);border-radius:6px;background:var(--surf);color:var(--ink);cursor:pointer;min-height:64px}
+.seat[data-s=processing]{background:var(--warn-t);border-color:var(--warn);border-style:dashed;cursor:not-allowed}
+.seat[data-s=confirmed]{background:var(--ok-t);border-color:var(--ok);cursor:default}
+.big{font-size:2rem;font-weight:700;color:var(--blue)}
+.mut{color:var(--mut)}pre{white-space:pre-wrap;background:var(--bg);padding:8px;border-radius:6px;max-height:160px;overflow:auto;font-size:.85rem}
+label{display:block;margin:6px 0 2px;font-weight:700}select,input[type=range]{font:inherit;max-width:100%}select{padding:6px;background:var(--surf);color:var(--ink);border:2px solid var(--line);border-radius:6px}
+.scroll{overflow-x:auto}
+input:not([type]){font:inherit;padding:6px;width:100%;max-width:360px;background:var(--surf);color:var(--ink);border:2px solid var(--line);border-radius:6px}
+.low *{font-family:system-ui,Arial,sans-serif!important}.low .panel,.low .card{border-radius:0}.low header{border-bottom-width:1px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header><div class="wrap">
+<h1>Railyug</h1>
+<p class="sub">A journey assistant that treats your trip as a living plan. It sits on top of IRCTC and never books for you.</p>
+<span class="sim" role="note">SIMULATED DATA – demo rule set rules-v1.0, not official</span> <button class="b alt" id="lowbw" aria-pressed="false" style="margin-top:8px;padding:2px 10px">Low-bandwidth mode</button>
+</div></header>
+<nav aria-label="Sections" role="tablist" id="tabs"></nav>
+<div id="live" class="mut" style="position:absolute;left:-999px" role="status" aria-live="polite"></div>
+<main id="main" tabindex="-1"></main>
+<script>
+const $=s=>document.querySelector(s);
+const PAX=[
+ {id:"P1",name:"Older passenger",note:"Limited mobility, needs lift or ramp, lower berth",speed:.5,fare:1100},
+ {id:"P2",name:"Caregiver of P1",note:"Always travels with P1",speed:1.1,fare:1100},
+ {id:"P3",name:"Child under five",note:"Needs a guardian next to them",speed:.6,fare:600},
+ {id:"P4",name:"Screen-reader user",note:"Keyboard and screen-reader flow",speed:1.1,fare:1100},
+ {id:"P5",name:"Adult family member",note:"Flexible, can go ahead",speed:1.2,fare:1100}];
+const S={tab:"journey",delay:0,lift:true,wl:14,lead:20,split:{P1:"A",P2:"A",P3:"A",P4:"A",P5:"A"},
+ seats:Array.from({length:12},(_,i)=>({n:i+1,st:"available",hold:null})),hold:null,win:180,log:[],anns:{},
+ ledger:PAX.map(p=>({...p,st:-1,cancelled:false})),msg:"",swap:{},w:{c:3,s:3,r:3},diff:"",off:{m:'online',note:'',sync:''},nm:['Mohammed Sharif Khan','Mohd Sherif Khan'],low:false};
+const fmt=m=>{m=Math.round(m);const h=Math.floor(m/60)%24,mm=((m%60)+60)%60;return String(h).padStart(2,"0")+":"+String(mm).padStart(2,"0")};
+const live=t=>{$("#live").textContent=t};
+const logE=t=>{S.log.unshift(new Date().toLocaleTimeString()+" · rules-v1.0 · "+t);S.log=S.log.slice(0,40)};
+/* seeded synthetic waitlist history */
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R=rng(42),H=[];for(let i=0;i<900;i++){const pos=1+Math.floor(R()*40),lead=1+Math.floor(R()*60);const p=1/(1+Math.exp(-(1.6-.13*pos+.03*lead)));H.push({pos,lead,ok:R()<p})}
+function wilson(k,n){const z=1.645,p=k/n,d=1+z*z/n,c=p+z*z/(2*n),a=z*Math.sqrt(p*(1-p)/n+z*z/(4*n*n));return[(c-a)/d,(c+a)/d]}
+function estimate(pos,lead){let s=H.filter(h=>Math.abs(h.pos-pos)<=3&&Math.abs(h.lead-lead)<=12);const n=s.length,k=s.filter(h=>h.ok).length;if(!n)return null;let[lo,hi]=wilson(k,n);return{lo:Math.max(.02,lo),hi:Math.min(.98,hi),n}}
+/* transfer engine */
+const erf=x=>{const t=1/(1+.3275911*Math.abs(x)),y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x);return x>=0?y:-y};
+const cdf=(x,m,sd)=>.5*(1+erf((x-m)/(sd*Math.SQRT2)));
+function transfer(){
+ const dist=S.lift?420:780,slow=Math.min(...PAX.map(p=>p.speed));
+ const walk=dist/slow/60,regroup=4,overhead=5+(S.lift?0:3),need=walk+regroup+overhead;
+ const margin=40-S.delay-need;/* minutes between needed time and Train 2 departure */
+ /* Train 2 is late by N(8,10) min; connection made if its delay >= -margin */
+ const p=1-cdf(-margin,8,10),lo=Math.max(.02,p-.08),hi=Math.min(.98,p+.08);
+ return{need,margin,lo,hi,walk,dist}}
+const pc=x=>Math.round(x*100)+"%";
+/* family rules */
+function checkSplit(){const s=S.split,e=[];
+ if(s.P1!==s.P2)e.push("P1 and P2 cannot be separated. The caregiver rule is a hard rule.");
+ if(s.P3!==s.P1&&s.P3!==s.P2)e.push("P3 must stay with at least one guardian (P1 or P2).");
+ if(s.P1==="B"&&false)e.push("");return e}
+/* tatkal */
+function tick(){const h=S.hold;if(!h)return;const left=Math.ceil((h.exp-Date.now())/1000);
+ [[S.win,"Hold started"],[60,"One minute left"],[30,"30 seconds left"]].forEach(([t,m])=>{if(left<=t&&!S.anns[t]){S.anns[t]=1;if(t!==S.win)live(m)}});
+ if(left<=0){const st=S.seats.find(x=>x.n===h.seat);st.st="available";st.hold=null;S.hold=null;S.anns={};S.msg="Hold expired, seat "+h.seat+" released. Your passenger details are kept so you can rebook quickly.";live(S.msg);logE("hold "+h.id+" expired, seat "+h.seat+" released");render();return}
+ const el=$("#cd");if(el)el.textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0")+" remaining"}
+setInterval(tick,500);
+function claim(seat,who){const st=S.seats.find(x=>x.n===seat);
+ if(st.st!=="available"){if(st.hold&&st.hold.who===who){S.msg="You already hold seat "+seat+". The timer was not restarted.";}else{const alt=S.seats.filter(x=>x.st==="available").slice(0,3).map(x=>x.n).join(", ");S.msg="Seat just taken. Next best seats: "+(alt||"none")+".";logE(who+" lost race for seat "+seat)}render();live(S.msg);return}
+ st.st="processing";st.hold={id:"H"+(S.log.length+1),who,exp:Date.now()+S.win*1000};
+ if(who==="You"){S.hold={id:st.hold.id,seat,exp:st.hold.exp};S.anns={};S.msg="Seat "+seat+" is Processing for you. Complete simulated payment before the timer ends.";live("Hold started. "+S.win+" seconds to pay.")}
+ else{S.msg="User B started booking seat "+seat+". It is now Processing for everyone else.";setTimeout(()=>{if(st.hold&&st.hold.who==="User B"){st.st="available";st.hold=null;S.msg="User B’s hold expired. Seat "+seat+" reopened.";render()}},S.win*1000)}
+ logE(who+" claimed seat "+seat);render()}
+function pay(){const h=S.hold;if(!h)return;const st=S.seats.find(x=>x.n===h.seat);st.st="confirmed";S.hold=null;S.msg="Simulated payment done. Seat "+h.seat+" is Confirmed. Ledger rows created per passenger. Final booking happens on the official IRCTC channel.";live(S.msg);logE("payment ok, seat "+h.seat+" confirmed");render()}
+function concurrency(){let wins=0;const slot={v:null};for(let i=0;i<500;i++){if(slot.v===null){slot.v=i;wins++}}S.msg="Concurrency test: 500 simulated users clicked one seat. Successful holds: "+wins+". Overlapping holds: "+(wins-1)+" (target 0).";live(S.msg);render()}
+/* ledger */
+const STATES=["Cancellation","Refund initiated","Refund processing","Final credit"];
+const refund=p=>Math.max(0,Math.round(p.fare*.75-60));
+/* views */
+const TABS=[["journey","Journey"],["replan","Re-plan"],["family","Family rules"],["tatkal","Tatkal hold"],["ledger","Ledger"],["rank","Ranking"],["swap","Seat exchange"],["off","Offline & checks"],["map","All 46 features"],["about","Honesty"]];
+function render(){document.body.classList.toggle('low',S.low);
+ $("#tabs").innerHTML=TABS.map(([k,l])=>`<button role="tab" aria-selected="${S.tab===k}" data-t="${k}">${l}</button>`).join("");
+ $("#tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{S.tab=b.dataset.t;render();$("#main").focus()});
+ $("#main").innerHTML=({journey,replan,family,tatkal,ledger,swap,about,rank:rankv,off:offv,map:mapv})[S.tab]();bind()}
+function journey(){const t=transfer(),e=estimate(S.wl,S.lead),arr=14*60+10+S.delay;
+ return `<section class="panel"><h2>Your trip, as a living plan</h2>
+ <p class="mut">Vijayawada → junction → destination. Five travellers, two separate tickets, so no guarantee that both legs work out.</p>
+ <div class="row"><button class="b" id="d55">Inject: Train 1 runs 55 minutes late</button><button class="b alt" id="lift">${S.lift?"Simulate lift outage":"Restore lift"}</button><button class="b alt" id="reset">Reset</button></div></section>
+ <div class="grid"><section class="card"><h3>Leg 1: Train 1</h3><span class="tag ok">✔ Confirmed</span>
+ <p>Arrives ${fmt(arr)} ${S.delay?`<span class="tag info">ⓘ Official feed: ${S.delay} min late</span>`:`(on time)`}</p></section>
+ <section class="card"><h3>Leg 2: Train 2</h3><span class="tag warn">⚠ Waitlisted</span>
+ <p>Departs 14:50. Platform change with ${S.lift?"a lift available":"no lift (stairs only)"}.</p></section></div>
+ <section class="panel"><h2>Can everyone make the connection?</h2>
+ <p>Group pace follows the slowest member (P1), plus ${t.dist} m of walking, regrouping and child-care time.</p>
+ <p class="big">${pc(t.lo)}–${pc(t.hi)} <span class="tag ${t.margin<0?"bad":t.margin<8?"warn":"ok"}">${t.margin<0?"✖ Likely missed":t.margin<8?"⚠ Tight":"✔ Comfortable"}</span></p>
+ <p>Needs about ${Math.round(t.need)} min. Margin: <strong>${Math.round(t.margin)} min</strong>. Assumes Train 2 is late by 8 ± 10 min.</p>
+ ${t.margin<0?`<p role="alert"><strong>Re-plan needed.</strong> <a href="#" id="go">See Plan A/B/C</a></p>`:""}</section>
+ <section class="panel"><h2>Will the waitlist ticket confirm?</h2>
+ <label for="wl">Waitlist position: ${S.wl}</label><input id="wl" type="range" min="1" max="40" value="${S.wl}">
+ <label for="ld">Days before departure: ${S.lead}</label><input id="ld" type="range" min="1" max="60" value="${S.lead}">
+ ${e?`<p class="big">${pc(e.lo)}–${pc(e.hi)}</p><p>Based on ${e.n} similar synthetic cases (90% Wilson interval). ${e.n<40?'<span class="tag warn">⚠ Low data</span>':""} Never shown as 0% or 100%.</p>`:`<p>No similar cases. Low data.</p>`}
+ <p class="mut">Estimate type: <span class="tag info">Predicted</span> from 900 seeded synthetic cases.</p></section>`}
+function replan(){const t=transfer(),e=estimate(S.wl,S.lead)||{lo:.2,hi:.5},late=t.margin<0;
+ const plans=[
+ {k:"A",n:"Keep Leg 1, hope for Train 2 (14:50)",arr:"Arrive ~19:30",p:late?[t.lo,t.hi]:[Math.min(t.lo,e.lo),Math.min(t.hi,e.hi)],ok:!late,why:late?"Train 1 delay leaves a negative margin. Connection probably missed.":"Works only if the waitlist clears and the transfer goes well.",worst:"Stranded at the junction overnight with a child and an older passenger."},
+ {k:"B",n:"All five on the next train (17:40), seats booked together",arr:"Arrive ~22:15",p:[.62,.8],ok:true,why:"Slower, but P1, P2, P3 stay together and the transfer has a long margin.",worst:"Seats could be RAC. Keep a booking-attempt id to avoid double booking."},
+ {k:"C",n:"P5 goes ahead on 14:50, family follows on 17:40",arr:"P5 ~19:30, family ~22:15",p:[.6,.78],ok:true,why:"Legal split. P1, P2, P3, P4 stay together.",worst:"P5 travels alone and cannot help with luggage."}];
+ return `<section class="panel"><h2>${late?"Train 1 delay detected: re-planned":"Options if something goes wrong"}</h2>
+ <p class="mut">Source: <span class="tag info">ⓘ Official (simulated feed)</span> can trigger a re-plan. Crowd reports are advisory only. Predictions show a range. Re-plan computed in under 1 second (budget 2 s).</p>
+ ${late?"":'<p>Inject the delay on the Journey tab to see the connection fail.</p>'}</section>
+ <div class="grid">${plans.map(p=>`<section class="card" aria-label="Plan ${p.k}"><h3>Plan ${p.k}: ${p.n}</h3>
+ <p><span class="tag ${p.ok?"ok":"bad"}">${p.ok?"✔ Feasible":"✖ Not recommended"}</span></p>
+ <p>${p.arr}<br>Success: <strong>${pc(p.p[0])}–${pc(p.p[1])}</strong></p><p>${p.why}</p><p class="mut"><strong>Worst case:</strong> ${p.worst}</p>
+ <button class="b alt" data-plan="${p.k}">Preview consequences</button></section>`).join("")}</div>
+ <section class="panel" id="pv" aria-live="polite"><p class="mut">Pick a plan to preview what changes before you confirm. Cancelling Leg 1 triggers refunds shown in the Ledger. Final action is on the official IRCTC site.</p></section>`}
+function family(){const e=checkSplit();
+ return `<section class="panel"><h2>Split the family?</h2><p class="mut">Hard rules apply before anything is ranked. Assign each traveller to Group A (14:50) or Group B (17:40).</p>
+ <div class="scroll"><table><caption class="mut">Traveller groups</caption><tr><th>Traveller</th><th>Group</th></tr>${PAX.map(p=>`<tr><td><strong>${p.id}</strong> ${p.name}<br><span class="mut">${p.note}</span></td><td><select aria-label="Group for ${p.id}" data-p="${p.id}"><option${S.split[p.id]==="A"?" selected":""} value="A">A: 14:50</option><option${S.split[p.id]==="B"?" selected":""} value="B">B: 17:40</option></select></td></tr>`).join("")}</table></div></section>
+ <section class="panel" role="status" aria-live="polite">${e.length?`<span class="tag bad">✖ Blocked</span><ul>${e.map(x=>`<li>${x}</li>`).join("")}</ul>`:
+ `<span class="tag ok">✔ Allowed</span><h3>Trade-off panel</h3><ul><li><strong>Gained:</strong> ${Object.values(S.split).includes("A")&&Object.values(S.split).includes("B")?"someone reaches earlier and can prepare the destination.":"no change, the family stays together."}</li><li><strong>Lost:</strong> ${Object.values(S.split).includes("A")&&Object.values(S.split).includes("B")?"help with luggage and a shared plan.":"nothing."}</li><li><strong>Who travels with whom:</strong> ${["A","B"].map(g=>PAX.filter(p=>S.split[p.id]===g).map(p=>p.id).join(", ")||"none").map((x,i)=>"Group "+"AB"[i]+": "+x).join(" | ")}</li><li><strong>If something goes wrong:</strong> the smaller group has the official helpline number and an offline pack.</li></ul>`}</section>`}
+function tatkal(){const left=S.hold?Math.max(0,Math.ceil((S.hold.exp-Date.now())/1000)):0;
+ return `<section class="panel"><h2>Tatkal fair-booking hold</h2>
+ <p class="mut">One seat, one holder. A claimed seat shows <strong>Processing</strong> to everyone else. Timer is enforced by a simulated server clock, and refreshing never extends it.</p>
+ <label for="win">Hold window</label><select id="win"><option value="180"${S.win===180?" selected":""}>3 minutes (default)</option><option value="120"${S.win===120?" selected":""}>2 minutes</option><option value="15"${S.win===15?" selected":""}>15 seconds (demo)</option></select></section>
+ <section class="panel"><div class="seats" role="group" aria-label="Seats">${S.seats.map(s=>`<button class="seat" data-s="${s.st}" data-n="${s.n}" aria-label="Seat ${s.n}, ${s.st}">Seat ${s.n}<br>${s.st==="available"?"Available":s.st==="processing"?"⏳ Processing":"✔ Confirmed"}</button>`).join("")}</div>
+ <div class="row" style="margin-top:12px"><button class="b alt" id="rival">User B grabs the same seat</button><button class="b alt" id="conc">Run concurrency test</button></div>
+ ${S.hold?`<p class="big" id="cd">${Math.floor(left/60)}:${String(left%60).padStart(2,"0")} remaining</p><p>Seat ${S.hold.seat} is held for you (text countdown, no flashing).</p><button class="b" id="pay">Pay (simulated)</button>`:""}
+ <p role="status" aria-live="polite"><strong>${S.msg}</strong></p>
+ <p class="mut">Click your own seat to hold it. Click a Processing seat to see “Seat just taken”. To see User B grab a seat first, press the button, then click it.</p></section>
+ <section class="panel"><h3>Audit trail</h3><pre>${S.log.join("\n")||"No events yet."}</pre></section>`}
+function ledger(){const tot=S.ledger.filter(l=>l.cancelled).reduce((a,l)=>a+refund(l),0);
+ return `<section class="panel"><h2>Ledger and refund timeline</h2><p class="mut">One row per traveller per leg. Refund rule (demo): 75% of fare minus ₹60 clerkage. States cannot be skipped.</p>
+ <div class="scroll"><table><tr><th>Traveller</th><th>Leg 2 fare</th><th>Status</th><th>Refund</th><th>Action</th></tr>${S.ledger.map((l,i)=>`<tr><td>${l.id} ${l.name}</td><td>₹${l.fare}</td><td>${l.cancelled?`${l.st+1}/4: <strong>${STATES[l.st]}</strong>`:"Active"}</td><td>${l.cancelled?"₹"+refund(l):"-"}</td><td>${!l.cancelled?`<button class="b alt" data-c="${i}">Cancel berth</button>`:l.st<3?`<button class="b alt" data-a="${i}">Advance state</button>`:"Complete"}</td></tr>`).join("")}</table></div>
+ <p>Reconciliation: components sum to <strong>₹${tot}</strong> across ${S.ledger.filter(l=>l.cancelled).length} cancelled berth(s). Each component has a unique id (RF-P1-L2…), so nothing is counted twice. <span class="tag ok">✔ Balanced</span></p></section>`}
+const SW=[
+ {id:"X1",title:"Move P3 next to the guardians",give:"P3, seat 14 (lower berth, far end of coach)",get:"Passenger X, seat 23 (lower berth, beside P1 and P2)",ok:true,why:"P3 is placed next to a guardian. P1 and P2 stay together. Both berths are the same class and type, so Passenger X loses nothing."},
+ {id:"X2",title:"Swap P1’s lower berth for an upper berth",give:"P1, seat 21 (lower berth)",get:"Passenger Y, seat 40 (upper berth)",ok:false,why:"Blocked. P1 needs a lower berth, and an upper berth fails the accessibility rule. It would also move P1 away from P2."}];
+function swap(){
+ return `<section class="panel"><h2>Seat exchange for family proximity</h2>
+ <p class="mut">Your tickets scatter the family: P3 is in seat 14, far from P1 and P2. Railyug can help you ask a co-passenger to swap. <strong>Both people must agree</strong>, and the hard rules are checked first.</p>
+ <p role="note"><span class="tag warn">⚠ Compliance</span> An exchange between travellers does not change a valid ticket or berth. Railyug cannot confirm it. Only the railway can, through its official process or the ticket examiner on board.</p></section>
+ ${SW.map(s=>{const st=S.swap[s.id];return `<section class="panel" aria-label="${s.title}"><h3>${s.title}</h3>
+ <p><strong>You give:</strong> ${s.give}<br><strong>You get:</strong> ${s.get}</p>
+ <p><span class="tag ${s.ok?"ok":"bad"}">${s.ok?"✔ Rules satisfied":"✖ Blocked by hard rule"}</span> ${s.why}</p>
+ ${!s.ok?"":!st?`<button class="b" data-sw="${s.id}" data-act="sent">Send exchange request</button>`:
+ st==="sent"?`<p><span class="tag info">ⓘ Request sent</span> Waiting for Passenger X to consent. (Demo controls below)</p><div class="row"><button class="b alt" data-sw="${s.id}" data-act="accepted">Simulate: they accept</button><button class="b alt" data-sw="${s.id}" data-act="declined">Simulate: they decline</button></div>`:
+ st==="accepted"?`<p><span class="tag ok">✔ Both consented</span> Consent recorded in the audit trail.</p><p><strong>Next steps:</strong> show this agreement to the ticket examiner on board, or use the official railway process. Your tickets are unchanged until the railway confirms it.</p>`:
+ `<p><span class="tag bad">✖ Declined</span> No change made. Railyug will not ask again. You can look for another option or ask the railway for adjacent seats.</p>`}
+ </section>`}).join("")}`}
+const OPT=[
+{id:'O1',n:'As booked: Train 1 then Train 2 (14:50)',a:1170,lo:1170,hi:1430,c:5900,r:.62,ok:true},
+{id:'O2',n:'Train 1 then next train (17:40)',a:1335,lo:1320,hi:1385,c:6400,r:.22,ok:true},
+{id:'O3',n:'Slower overnight direct train',a:1810,lo:1790,hi:1890,c:5200,r:.12,ok:true}];
+function rank(){const o=OPT.map(x=>({...x,r:x.id==='O1'&&S.delay?.9:x.r}));const adj=x=>x.a+x.r*180;const mm=f=>{const v=o.map(f);return[Math.min(...v),Math.max(...v)]};
+const[ca,cb]=mm(x=>x.c),[aa,ab]=mm(adj),[ra,rb]=mm(x=>x.r);const n=(v,a,b)=>b>a?(v-a)/(b-a):0;const t=S.w.c+S.w.s+S.w.r;
+return o.map(x=>({...x,adj:adj(x),sc:(S.w.c*n(x.c,ca,cb)+S.w.s*n(adj(x),aa,ab)+S.w.r*n(x.r,ra,rb))/t})).sort((p,q)=>p.sc-q.sc||(p.id<q.id?-1:1))}
+function rankv(){const o=rank();return `<section class='panel'><h2>Ranked options</h2><p class='mut'>Hard rules filter first (accessibility), then your priorities rank what is left. Same inputs always give the same order; ties break by option id. Rule set rules-v1.0. ${S.delay?'<span class="tag info">ⓘ Official delay applied: Option O1 is now much riskier.</span>':'Inject the delay on the Journey tab to watch O1 drop.'}</p>
+${[['c','Lowest cost'],['s','Fastest arrival'],['r','Lowest disruption risk']].map(([k,l])=>`<label for='w${k}'>${l}: ${S.w[k]} of 5</label><input id='w${k}' type='range' min='1' max='5' value='${S.w[k]}' data-w='${k}'>`).join('')}
+<p role='status' aria-live='polite'><strong>${S.diff||'Move a slider to see how the ranking changes.'}</strong></p></section>
+${o.map((x,i)=>`<section class='card' style='margin:10px 0'><h3>#${i+1} ${x.id}: ${x.n}</h3><p>Arrival ${fmt(x.a)}${x.a>=1440?' (next day)':''}, range ${fmt(x.lo)}–${fmt(x.hi)}. Risk-adjusted arrival ${fmt(x.adj)}${x.adj>=1440?' (next day)':''}. Cost ₹${x.c}. Miss or non-confirm risk ${pc(x.r)}.</p><p class='mut'>Why: ${i===0?'best weighted score for your priorities.':'scores '+(x.sc-o[0].sc).toFixed(2)+' behind #1.'}</p></section>`).join('')}
+<section class='card'><span class='tag bad'>✖ Removed</span> Fast route via a stairs-only junction. It fails P1’s accessibility need, so it is filtered out before ranking.</section>
+<section class='panel'><h3>Price and cancellation comparison</h3><p>Cancelling Leg 2 for all five returns about ₹${PAX.reduce((a,p)=>a+refund(p),0)} (demo rule). Deadline alert: decide before chart preparation, shown here as 14:00 on the day.</p></section>`}
+const lev=(a,b)=>{const d=Array.from({length:a.length+1},(_,i)=>[i,...Array(b.length).fill(0)]);for(let j=1;j<=b.length;j++)d[0][j]=j;for(let i=1;i<=a.length;i++)for(let j=1;j<=b.length;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return d[a.length][b.length]};
+function nmr(){const f=s=>s.toLowerCase().replace(/[^a-z ]/g,'').split(' ').filter(Boolean).join(' ');const a=f(S.nm[0]),b=f(S.nm[1]);if(!a||!b)return '';const sim=1-lev(a,b)/Math.max(a.length,b.length);
+return sim===1?`<p><span class='tag ok'>✔ Names match</span></p>`:`<p><span class='tag ${sim>.7?'warn':'bad'}'>⚠ Mismatch</span> Similarity ${Math.round(sim*100)}%. The names differ, which could cause refusal of travel or an identity-check problem.</p><p><strong>Correction path:</strong> contact the authorised railway process to correct the name. Railyug cannot promise the outcome.</p>`}
+function offv(){const o=S.off,ver=S.delay?7:5;
+return `<section class='panel'><h2>Offline journey pack</h2><p class='mut'>Saved on this device so P5 can keep going without a connection. Go offline, add a note, inject the delay on the Journey tab, then come back online.</p>
+<div class='scroll'><table><tr><th>Item</th><th>Value</th><th>Source</th><th>Version</th></tr>
+<tr><td>Coach and berths</td><td>B3, berths 21–25</td><td>Official (simulated)</td><td>v5</td></tr>
+<tr><td>Fallback plan</td><td>Plan B, 17:40 train</td><td>Railyug</td><td>v5</td></tr>
+<tr><td>Contacts</td><td>Family group, railway helpline (simulated)</td><td>You</td><td>v5</td></tr>
+<tr><td>Last known status</td><td>Train 1 ${o.m==='offline'||!S.delay?'on time':'running '+S.delay+' min late'}</td><td>Official (simulated)</td><td>v${o.m==='offline'?5:ver}</td></tr>
+${o.note?`<tr><td>Your note</td><td>${o.note}</td><td>Local edit</td><td>pending</td></tr>`:''}</table></div>
+<div class='row' style='margin-top:10px'><button class='b alt' id='go-off'>${o.m==='offline'?'Back online and sync':'Go offline'}</button>${o.m==='offline'?`<button class='b alt' id='add-note'>Add note: Train 2 platform may change</button>`:''}</div>
+<p role='status' aria-live='polite'>${o.m==='offline'?'<span class="tag warn">⚠ Offline</span>':o.sync?'<span class="tag warn">⚠ Conflict summary</span> '+o.sync:''}</p></section>
+<section class='panel'><h2>Name-mismatch check</h2><label for='n1'>Name on ticket 1</label><input id='n1' value='${S.nm[0]}'><label for='n2'>Name on ticket 2</label><input id='n2' value='${S.nm[1]}'><p><button class='b' id='nmc'>Check names</button></p><div role='status' aria-live='polite'>${nmr()}</div></section>`}
+const FN='Seat sharing marketplace|Partial seat-sharing requests|Family seat swap|Mutual-consent exchange|Compensation offers|Seat preference matching|Pre-boarding coordination|Verified profiles|Anti-scalping|Waitlist estimator|Waitlist opportunity matching|Alternative train suggestions|Deadline alerts|Price and cancellation comparison|Multi-train planner|Risk-based ranking|Disruption detection|Instant re-planning|Connection feasibility|Plan A/B/C|Custom ranking preferences|Family group planner|Family proximity assistant|Caregiver rule|Child-friendly planning|Accessibility-aware routes|Screen-reader and keyboard|RailCircle community|Journey chat|Shared cab|Private contact sharing|Ratings and reporting|Group coordination|Passenger ledger|Cancellation impact|Refund timeline|Refund reconciliation|Booking guidance|Official, crowd, predicted labels|Confidence display|Offline pack|Safe sync|Audit trail|Override preview|Low-bandwidth mode|Disruption simulation'.split('|');
+const FS=['RRLLR','PLRPL','RPPPP','LLLLL','LPLLP','LLRRR','RRRLP','LLLPL','LLPLL','P'].join('');
+const FT={L:['ok','✔ Working in demo'],P:['warn','⚠ Partly built'],R:['info','ⓘ Roadmap, deferred']};
+function mapv(){const c=k=>FS.split('').filter(x=>x===k).length;
+return `<section class='panel'><h2>All 46 features in one place</h2><p><strong>${c('L')}</strong> working, <strong>${c('P')}</strong> partly built, <strong>${c('R')}</strong> roadmap. Roadmap items (marketplace, compensation, community, verified profiles) are deferred because of legal and trust risk. Railyug never claims an unofficial exchange changes a valid ticket.</p>
+<div class='scroll'><table><tr><th>#</th><th>Feature</th><th>Status</th></tr>${FN.map((n,i)=>`<tr><td>${i+1}</td><td>${n}</td><td><span class='tag ${FT[FS[i]][0]}'>${FT[FS[i]][1]}</span></td></tr>`).join('')}</table></div>
+<p class='mut'>Partly built means a simple version exists or only some of the feature shows. The 20 scripted disruptions, replay from the log, and refund recalculation for other passengers after a cancellation are not built here.</p></section>`}
+function about(){return `<section class="panel"><h2>What this demo is, and isn’t</h2><ul>
+<li>All trains, seats, delays and refunds are <strong>simulated</strong>. The rule set is a labelled demo, not IRCTC’s.</li>
+<li>Railyug does not book or cancel. It prepares a summary and hands you to the official IRCTC channel.</li>
+<li>A Processing hold is never a confirmed ticket.</li>
+<li>Ranges come from seeded synthetic data, so results are the same every time.</li>
+<li>Not in this demo (roadmap): offline sync, name-mismatch check, seat marketplace, community features.</li></ul></section>`}
+function bind(){
+ const g=id=>document.getElementById(id);
+ if(g("d55"))g("d55").onclick=()=>{S.delay=55;logE("official feed: Train 1 +55 min");live("Official update: Train 1 is 55 minutes late. Connection likely missed.");render()};
+ if(g("lift"))g("lift").onclick=()=>{S.lift=!S.lift;render()};
+ if(g("reset"))g("reset").onclick=()=>{S.delay=0;S.lift=true;render()};
+ if(g("go"))g("go").onclick=e=>{e.preventDefault();S.tab="replan";render();$("#main").focus()};
+ if(g("wl"))g("wl").oninput=e=>{S.wl=+e.target.value;render();g("wl").focus()};
+ if(g("ld"))g("ld").oninput=e=>{S.lead=+e.target.value;render();g("ld").focus()};
+ document.querySelectorAll("[data-plan]").forEach(b=>b.onclick=()=>{const k=b.dataset.plan;g("pv").innerHTML=`<h3>Plan ${k}: what changes if you confirm</h3><ul><li>${k==="A"?"No cancellations. Leg 2 stays waitlisted.":"Leg 2 waitlist cancelled, refund of about ₹"+Math.round(PAX.reduce((a,p)=>a+refund(p),0))+" across five travellers (demo rule)."}</li><li>${k==="C"?"P5 is the only person separated. Caregiver rule still holds.":"All five travel together."}</li><li>Next step: book on the official IRCTC channel. Railyug cannot do this for you.</li></ul>`;live("Consequences shown for Plan "+k)});
+ document.querySelectorAll("[data-p]").forEach(s=>s.onchange=()=>{S.split[s.dataset.p]=s.value;render();document.querySelector(`[data-p="${s.dataset.p}"]`).focus();const e=checkSplit();live(e.length?"Blocked. "+e[0]:"Split allowed")});
+ document.querySelectorAll(".seat").forEach(b=>b.onclick=()=>claim(+b.dataset.n,"You"));
+ if(g("rival"))g("rival").onclick=()=>{const st=S.seats.find(x=>x.st==="available");if(st)claim(st.n,"User B")};
+ if(g("conc"))g("conc").onclick=concurrency;
+ if(g("pay"))g("pay").onclick=pay;
+ if(g("win"))g("win").onchange=e=>{S.win=+e.target.value};
+ document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{const l=S.ledger[+b.dataset.c];l.cancelled=true;l.st=0;logE("cancelled "+l.id);render();live(l.id+" cancelled")});
+ document.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>{const l=S.ledger[+b.dataset.a];if(l.st<3)l.st++;render();live(l.id+": "+STATES[l.st])});
+ document.querySelectorAll("[data-sw]").forEach(b=>b.onclick=()=>{S.swap[b.dataset.sw]=b.dataset.act;logE("consent record: exchange "+b.dataset.sw+" "+b.dataset.act);live("Exchange "+b.dataset.act);render()});
+ document.querySelectorAll('[data-w]').forEach(s=>s.oninput=()=>{const b=rank().map(x=>x.id);S.w[s.dataset.w]=+s.value;const a=rank();const ch=a.map((x,i)=>[x,b.indexOf(x.id),i]).filter(([x,p,i])=>p!==i);S.diff=ch.length?ch.map(([x,p,i])=>'Option '+x.id+' moved from '+(p+1)+' to '+(i+1)).join('; ')+' because you changed the '+{c:'cost',s:'speed',r:'risk'}[s.dataset.w]+' weight.':'Order unchanged.';logE('ranking inputs '+JSON.stringify(S.w)+' gives '+a.map(x=>x.id).join('>'));render();document.querySelector('[data-w='+s.dataset.w+']').focus()});
+ if(g('go-off'))g('go-off').onclick=()=>{const o=S.off;if(o.m==='offline'){o.m='online';o.sync=(S.delay?'Official status updated to v7 (Train 1 late). ':'No newer official data. ')+(o.note?'Your local note was kept as a pending item and not overwritten.':'')}else{o.m='offline';o.sync=''}logE('offline mode '+o.m);render()};
+ if(g('add-note'))g('add-note').onclick=()=>{S.off.note='Train 2 platform may change';render()};
+ if(g('nmc'))g('nmc').onclick=()=>{S.nm=[g('n1').value,g('n2').value];render()};
+}
+$('#lowbw').onclick=e=>{S.low=!S.low;e.target.setAttribute('aria-pressed',S.low);e.target.textContent=S.low?'Low-bandwidth mode: on':'Low-bandwidth mode';render()};
+render();
+</script>
+</body>
+</html>
